@@ -9,7 +9,7 @@ def scrape_finviz(ticker):
         headers = {'User-Agent': 'Mozilla/5.0'}
         response = requests.get(url, headers=headers)
         if response.status_code != 200:
-            print("Failed to retrieve data")
+            print("Failed to retrieve data for", ticker)
             return None
         
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -28,7 +28,7 @@ def scrape_finviz(ticker):
         
         return pd.DataFrame([data])
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"An error occurred for {ticker}: {e}")
         return None
 
 def scrape_multiple_tickers(tickers):
@@ -48,8 +48,18 @@ def scrape_multiple_tickers(tickers):
         print("No data retrieved.")
         return None
 
-# Örnek kullanım
-tickers = ['AAPL', 'MSFT', 'GOOG']  # Hisse kodları listesi
+# Hisse kodları listesi
+tickers = [
+    'AAPL', 'ABNB', 'ADBE', 'ADI', 'ADP', 'ADSK', 'AEP', 'AMAT', 'AMD', 'AMGN', 'AMZN', 'ANSS', 'APP', 'ARM', 
+    'ASML', 'AVGO', 'AXON', 'AZN', 'BIIB', 'BKNG', 'BKR', 'CCEP', 'CDNS', 'CDW', 'CEG', 'CHTR', 'CMCSA', 
+    'COST', 'CPRT', 'CRWD', 'CSCO', 'CSGP', 'CSX', 'CTAS', 'CTSH', 'DASH', 'DDOG', 'DXCM', 'EA', 'EXC', 'FANG', 
+    'FAST', 'FTNT', 'GEHC', 'GFS', 'GILD', 'GOOG', 'GOOGL', 'HON', 'IDXX', 'INTC', 'INTU', 'ISRG', 'KDP', 'KHC', 
+    'KLAC', 'LIN', 'LRCX', 'LULU', 'MAR', 'MCHP', 'MDB', 'MDLZ', 'MELI', 'META', 'MNST', 'MRVL', 'MSFT', 'MSTR', 
+    'MU', 'NFLX', 'NVDA', 'NXPI', 'ODFL', 'ON', 'ORLY', 'PANW', 'PAYX', 'PCAR', 'PDD', 'PEP', 'PLTR', 'PYPL', 
+    'QCOM', 'REGN', 'ROPR', 'ROST', 'SBUX', 'SNPS', 'TEAM', 'TMUS', 'TSLA', 'TTD', 'TTWO', 'TXN', 'VRSK', 'VRTX', 
+    'WBD', 'WDAY', 'XEL', 'ZS'
+]
+
 df = scrape_multiple_tickers(tickers)
 if df is not None:
     df.to_csv('finviz_data.csv', index=False)
