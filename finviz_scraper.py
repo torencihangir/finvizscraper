@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import time  # Gecikme için gerekli kütüphane
 
 def scrape_finviz(ticker):
     try:
@@ -30,8 +31,26 @@ def scrape_finviz(ticker):
         print(f"An error occurred: {e}")
         return None
 
+def scrape_multiple_tickers(tickers):
+    all_data = []
+    for ticker in tickers:
+        print(f"Scraping data for {ticker}...")
+        data = scrape_finviz(ticker)
+        if data is not None:
+            data['Ticker'] = ticker  # Hisse kodunu ekle
+            all_data.append(data)
+        time.sleep(5)  # Her istekten sonra 5 saniye bekle
+    
+    # Pandas DataFrame'e dönüştür
+    if all_data:
+        return pd.concat(all_data, ignore_index=True)
+    else:
+        print("No data retrieved.")
+        return None
+
 # Örnek kullanım
-ticker = 'AAPL'  # Hisse kodu
-df = scrape_finviz(ticker)
+tickers = ['AAPL', 'MSFT', 'GOOG']  # Hisse kodları listesi
+df = scrape_multiple_tickers(tickers)
 if df is not None:
-    print(df)
+    df.to_csv('finviz_data.csv', index=False)
+    print("Data saved to finviz_data.csv")
